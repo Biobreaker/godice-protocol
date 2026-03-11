@@ -1,5 +1,5 @@
-# GoCube BLE Protocol Documentation
-GoCube is a bluetooth enabled Rubik's cube. This document contains a partial description of the GoCube BLE protocol.
+# GoDice BLE Protocol Documentation
+GoDice is a bluetooth enabled dice. This document contains a partial description of the GoDice BLE protocol.
 
 # Overview
 Setup communication:
@@ -8,20 +8,16 @@ Setup communication:
 - Enable notifications for the TX characteristic service
 
 The following notifications are sent without requests:
-- 3D tracking: 15 notifications per second (MsgOrientation). These notifications can be disabled or enabled
+- Rolling: one message while the dice is rolling
 - Rotations: one message each time a face is rotated (MsgRotation)
 
 The following notifications can be requested:
 - Current battery level (MsgBattery)
-- Current state (MsgState)
-- Offline stats (MsgStats)
-- Cube type (MsgCubeType)
-
+- DiceColor (MsgColor)
+  
 Additional requests:
-- Reboot
-- Toggle backlight
-- Calibrate 3D tracking
-- Reset cube to solved state
+- Set Led ligt
+- Pulse Led light
 
 # GATT Services
 | Service             | Properties | UUID |
@@ -34,33 +30,22 @@ Additional requests:
 Requests supported by the RX Characterstic service.
 
 ## Request messages
-Enable or disable MsgOrientation (3D tracking):
 
-| Value | Command            |
-| ----- | ------------------ |
-| 0x37  | DisableOrientation |
-| 0x38  | EnableOrientation  |
 
 Request additional information from the cube:
 
 | Value | Command         | Message Type |
 | ----- | --------------- | -----------  |
 | 0x32  | GetBattery      | MsgBattery   |
-| 0x33  | GetState        | MsgState     |
-| 0x39  | GetStats        | MsgStats     |
-| 0x56  | GetCubeType     | MsgCubeType  |
+| 0x17  | GetColor        | MsgColor     |
 
 ## Configuration
 
 | Value | Command              | Description |
 | ----- | -------------------- | ----------- |
-| 0x34  | Reboot               | Reboot the cube |
-| 0x35  | SetSolvedState       | Resets the cube to solved state |
-| 0x41  | LedFlash             | Flash the backlight three times |
-| 0x42  | LedToggleAnimation   | Enable or disable animated backlight |
-| 0x43  | LedFlashSlow         | Slowly flashes the backlight three times |
-| 0x44  | LedToggle            | Toggle backlight |
-| 0x57  | CalibrateOrientation | Calibrate 3D tracking |
+| 0x08  | SetLed               | Set the color of the leds |
+| 0x10  | PulseLed             | Pulse led for a set time in set color |
+
 
 # Notifications
 This section describes the format of the notifications.
@@ -71,9 +56,6 @@ This section describes the format of the notifications.
 | 0           | 1              | Prefix   | Fixed value: 0x2A (*) | 
 | 1           | 1              | Length   | Length excluding Suffix |
 | 2           | 1              | Type     | Message Type |
-| 3           | Length-4       | Message  | Message |
-| Length-1    | 1              | Checksum | Sum of byte 0 .. (Length-2) % 0x100 |
-| Length      | 2              | Suffix   | Fixed value: [0x0D, 0x0A] (CRLF) |
 
 > **Example:**
 > | Byte Offset | Value | Description |

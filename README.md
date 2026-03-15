@@ -9,15 +9,19 @@ Setup communication:
 
 The following notifications are sent without requests:
 - Rolling: one message while the dice is rolling
-- Rotations: one message each time a face is rotated (MsgRotation)
+- RolledResults: 
+    - one message when a face is rolled (MsgStable)
+    - one message when a face is rolled but tilted (MsgTiltStable)
+    - one message when a face is rolled in a way that is cheated (MsgFakeStable)
+    - one message when a rotation on an axis is performed (MsgMove)
 
 The following notifications can be requested:
 - Current battery level (MsgBattery)
 - DiceColor (MsgColor)
   
 Additional requests:
-- Set Led ligt
-- Pulse Led light
+- Set Led ligt (MsgSetLight)
+- Pulse Led light (MsgSetToggleLight)
 
 # GATT Services
 | Service             | Properties | UUID |
